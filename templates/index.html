@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF to MP3 Converter</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #6B73FF 0%, #000DFF 100%);
+        }
+        .file-upload {
+            border: 2px dashed #6B73FF;
+            transition: all 0.3s ease;
+        }
+        .file-upload:hover {
+            border-color: #000DFF;
+            background-color: rgba(107, 115, 255, 0.05);
+        }
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 0.6; }
+            50% { opacity: 1; }
+            100% { opacity: 0.6; }
+        }
+        .progress-bar {
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body class="min-h-screen gradient-bg flex flex-col items-center justify-center p-4">
+    <div class="w-full max-w-2xl bg-white rounded-xl shadow-2xl overflow-hidden">
+        <!-- Header -->
+        <div class="bg-indigo-900 text-white p-6 text-center">
+            <h1 class="text-3xl font-bold mb-2">
+                <i class="fas fa-file-pdf mr-2"></i>
+                PDF to MP3 Converter
+                <i class="fas fa-file-audio ml-2"></i>
+            </h1>
+            <p class="text-indigo-200">Transform your PDF documents into audio files effortlessly</p>
+        </div>
+
+        <!-- Main Content -->
+        <div class="p-6">
+            <!-- Upload Area -->
+            <div id="upload-section" class="file-upload rounded-lg p-8 text-center cursor-pointer mb-6">
+                <div class="flex flex-col items-center justify-center">
+                    <i class="fas fa-cloud-upload-alt text-5xl text-indigo-500 mb-4"></i>
+                    <h2 class="text-xl font-semibold text-gray-700 mb-2">Upload PDF File</h2>
+                    <!-- Restored text below upload file -->
+                    <p class="text-gray-500 mb-4">Drag & drop your PDF file here or click to browse</p>
+                    <input type="file" id="pdf-upload" accept=".pdf" class="hidden">
+                    <label for="pdf-upload" class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-6 rounded-full transition duration-300 cursor-pointer">
+                        Select PDF
+                    </label>
+                </div>
+            </div>
+
+            <!-- Processing Section (Initially Hidden) -->
+            <div id="processing-section" class="hidden">
+                <div class="bg-indigo-50 rounded-lg p-6 mb-6">
+                    <div class="flex items-center mb-4">
+                        <div class="p-2 bg-indigo-100 rounded-full mr-4">
+                            <i class="fas fa-cog text-indigo-600 text-xl pulse-animation"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="font-medium text-gray-800">Processing PDF</h3>
+                            <p class="text-sm text-gray-500" id="status-text">Extracting text from PDF...</p>
+                        </div>
+                    </div>
+                    
+                   <div class="w-full bg-gray-200 rounded-full h-2.5 mb-1">
+    <div id="progress-bar" class="progress-bar bg-indigo-600 h-2.5 rounded-full" style="width: 0%"></div>
+</div>
+<p id="progress-text" class="text-sm text-gray-500 mb-4">0%</p>
+
+                </div>
+            </div>
+
+            <!-- Result Section (Initially Hidden) -->
+            <div id="result-section" class="hidden">
+                <div class="bg-green-50 rounded-lg p-6 mb-6">
+                    <div class="flex items-center mb-4">
+                        <div class="p-2 bg-green-100 rounded-full mr-4">
+                            <i class="fas fa-check-circle text-green-600 text-xl"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="font-medium text-gray-800">Conversion Complete!</h3>
+                            <p class="text-sm text-gray-500">Your MP3 file is ready to download</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <p class="font-medium" id="filename-display">document.pdf</p>
+                            <p class="text-sm text-gray-500" id="file-details">2.4 MB • 15 pages</p>
+                        </div>
+                        <a id="download-btn" class="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-6 rounded-full transition duration-300">
+                            <i class="fas fa-download mr-2"></i>Download MP3
+                        </a>
+                    </div>
+                </div>
+
+                <button id="new-file-btn" class="w-full bg-indigo-100 hover:bg-indigo-200 text-indigo-800 font-medium py-2 px-6 rounded-full transition duration-300">
+                    <i class="fas fa-redo mr-2"></i>Convert Another File
+                </button>
+            </div>
+
+            <!-- Features Section -->
+            <div class="mt-8">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">How It Works</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="bg-white p-4 rounded-lg border border-gray-100 shadow-sm">
+                        <div class="text-indigo-600 mb-3">
+                            <i class="fas fa-upload text-2xl"></i>
+                        </div>
+                        <h4 class="font-medium mb-2">1. Upload PDF</h4>
+                        <p class="text-sm text-gray-500">Select your PDF document from your device</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg border border-gray-100 shadow-sm">
+                        <div class="text-indigo-600 mb-3">
+                            <i class="fas fa-cogs text-2xl"></i>
+                        </div>
+                        <h4 class="font-medium mb-2">2. Automatic Conversion</h4>
+                        <p class="text-sm text-gray-500">Our system extracts text and converts it to speech</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg border border-gray-100 shadow-sm">
+                        <div class="text-indigo-600 mb-3">
+                            <i class="fas fa-download text-2xl"></i>
+                        </div>
+                        <h4 class="font-medium mb-2">3. Download MP3</h4>
+                        <p class="text-sm text-gray-500">Get your audio file ready to listen anywhere</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="bg-gray-50 p-4 text-center text-sm text-gray-500">
+            <p>PDF to MP3 Converter • Uses advanced text-to-speech technology</p>
+        </div>
+    </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const pdfUpload = document.getElementById('pdf-upload');
+    const uploadSection = document.getElementById('upload-section');
+    const processingSection = document.getElementById('processing-section');
+    const resultSection = document.getElementById('result-section');
+    const statusText = document.getElementById('status-text');
+    const progressBar = document.getElementById('progress-bar');
+    const filenameDisplay = document.getElementById('filename-display');
+    const fileDetails = document.getElementById('file-details');
+    const downloadBtn = document.getElementById('download-btn');
+    const newFileBtn = document.getElementById('new-file-btn');
+
+    pdfUpload.addEventListener('change', function(e) {
+        if (e.target.files.length > 0) {
+            const file = e.target.files[0];
+            if (!file.name.endsWith('.pdf')) {
+                alert('Please upload a PDF file');
+                return;
+            }
+
+            uploadSection.classList.add('hidden');
+            processingSection.classList.remove('hidden');
+            filenameDisplay.textContent = file.name;
+
+            processFile(file);
+        }
+    });
+
+   function processFile(file) {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    let progress = 0;
+    progressBar.style.width = '0%';
+    const progressText = document.getElementById('progress-text');
+
+    // Smooth progress simulation
+    const interval = setInterval(() => {
+        if(progress < 95){           // slow growth up to 95%
+            progress += 1;           // small increment
+            progressBar.style.width = progress + '%';
+            progressText.textContent = progress + '%';
+        }
+    }, 300);  // every 50ms → smooth animation
+
+    // Send the PDF to backend
+    fetch('/upload', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => {
+        clearInterval(interval);     // stop progress simulation
+        if (!response.ok) throw new Error('Network response was not ok');
+        return response.blob();      // get the MP3 file
+    })
+    .then(blob => {
+        // Complete progress to 100%
+        progress = 100;
+        progressBar.style.width = progress + '%';
+        progressText.textContent = progress + '%';
+
+        // Prepare download link
+        const url = window.URL.createObjectURL(blob);
+        downloadBtn.href = url;
+        downloadBtn.download = file.name.replace('.pdf', '.mp3');
+        downloadBtn.style.display = 'inline-block';
+
+        // Hide processing, show result section
+        processingSection.classList.add('hidden');
+        resultSection.classList.remove('hidden');
+
+        // Show file details
+        const pageCount = Math.floor(Math.random() * 50) + 1; // mock pages
+        const fileSizeMB = (file.size / (1024*1024)).toFixed(1); // size in MB
+        fileDetails.textContent = `${fileSizeMB} MB • ${pageCount} pages`;
+    })
+    .catch(error => {
+        clearInterval(interval);
+        console.error(error);
+        alert('Error processing the file. Please try again.');
+        processingSection.classList.add('hidden');
+        uploadSection.classList.remove('hidden');
+    });
+}
+
+    newFileBtn.addEventListener('click', function() {
+        pdfUpload.value = '';
+        progressBar.style.width = '0%';
+        resultSection.classList.add('hidden');
+        uploadSection.classList.remove('hidden');
+    });
+
+    // Drag & drop
+    uploadSection.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        this.classList.add('border-indigo-700', 'bg-indigo-50');
+    });
+    uploadSection.addEventListener('dragleave', function(e) {
+        e.preventDefault();
+        this.classList.remove('border-indigo-700', 'bg-indigo-50');
+    });
+    uploadSection.addEventListener('drop', function(e) {
+        e.preventDefault();
+        this.classList.remove('border-indigo-700', 'bg-indigo-50');
+        if (e.dataTransfer.files.length > 0) {
+            pdfUpload.files = e.dataTransfer.files;
+            const event = new Event('change');
+            pdfUpload.dispatchEvent(event);
+        }
+    });
+});
+</script>
+</body>
+</html>
